@@ -6,6 +6,7 @@ params.outdir = params.outdir ?: "results"
 params.min_genes = params.min_genes ?: 200
 params.min_cells = params.min_cells ?: 3
 params.max_mito_pct = params.max_mito_pct ?: 20.0
+params.expected_doublet_rate = params.expected_doublet_rate ?: 0.06
 
 process PREPROCESS_QC {
     tag "preprocess_qc"
@@ -30,7 +31,29 @@ process PREPROCESS_QC {
     """
 }
 
+process DOUBLET_SCRUBLET {
+    tag "doublet_scrublet"
+    publishDir "${params.outdir}/02_doublet", mode: "copy"
+
+    input:
+    path preprocessed_h5ad
+
+    output:
+    path "singlets.h5ad", emit: singlets_h5ad
+    path "scrublet_annotated.h5ad", emit: scrublet_annotated_h5ad
+
+    script:
+    """
+    python ${projectDir}/bin/02_scrublet.py \
+      --input ${preprocessed_h5ad} \
+      --output singlets.h5ad \
+      --output-annotated scrublet_annotated.h5ad \
+      --expected-doublet-rate ${params.expected_doublet_rate}
+    """
+}
+
 workflow {
     ch_input = Channel.fromPath(params.input_h5ad, checkIfExists: true)
-    PREPROCESS_QC(ch_input)
+    preprocessed = PREPROCESS_QC(ch_input)
+    DOUBLET_SCRUBLET(preprocessed.preprocessed_h5ad)
 }
