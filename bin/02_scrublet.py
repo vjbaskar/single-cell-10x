@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Run scrublet on filtered data."""
 
 import argparse
 from pathlib import Path
@@ -18,6 +19,7 @@ def parse_args():
 
 
 def main():
+    """Score and remove predicted doublets."""
     args = parse_args()
     adata = sc.read_h5ad(args.input)
     counts_matrix = adata.X

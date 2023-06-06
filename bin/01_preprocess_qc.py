@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Preprocess cells by simple QC filters."""
 
 import argparse
 from pathlib import Path
@@ -19,6 +20,7 @@ def parse_args():
 
 
 def main():
+    """Run preprocessing on one AnnData."""
     args = parse_args()
     adata = sc.read_h5ad(args.input)
     adata.var_names_make_unique()

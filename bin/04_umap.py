@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Generate UMAP from integrated data."""
 
 import argparse
 from pathlib import Path
@@ -18,6 +19,7 @@ def parse_args():
 
 
 def main():
+    """Compute neighbors, leiden and UMAP."""
     args = parse_args()
     adata = sc.read_h5ad(args.input)
 

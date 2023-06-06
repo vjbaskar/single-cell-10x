@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Integrate with SCVI."""
 
 import argparse
 from pathlib import Path
@@ -19,6 +20,7 @@ def parse_args():
 
 
 def main():
+    """Fit SCVI and save latent embedding."""
     args = parse_args()
     adata = sc.read_h5ad(args.input)
     if args.batch_key not in adata.obs.columns:
