@@ -1,0 +1,8 @@
+work/
+.nextflow*
+results/
+*.h5ad
+*.h5
+*.loom
+*.mtx
+*.npz

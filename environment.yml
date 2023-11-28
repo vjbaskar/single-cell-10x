@@ -1,0 +1,23 @@
+name: nf-scanpy
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.10
+  - pip
+  - scanpy
+  - scrublet
+  - scvi-tools
+  - pytorch
+  - leidenalg
+  - igraph
+  - anndata
+  - numpy
+  - pandas
+  - matplotlib
+  - seaborn
+  - h5py
+  - jupyterlab
+  - pip:
+      - typer
+      - git+https://github.com/haniffalab/scanpy_plus.git
