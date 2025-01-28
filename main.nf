@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl=2
 
-params.input_h5ad = params.input_h5ad ?: "data/input.h5ad"
+params.metadata_csv = params.metadata_csv ?: "input/metadata.csv"
 params.outdir = params.outdir ?: "results"
 params.min_genes = params.min_genes ?: 200
 params.min_cells = params.min_cells ?: 3
@@ -18,7 +18,7 @@ process PREPROCESS_QC {
     publishDir "${params.outdir}/01_preprocess", mode: "copy"
 
     input:
-    path input_h5ad
+    path metadata_csv
 
     output:
     path "preprocessed.h5ad", emit: preprocessed_h5ad
@@ -27,7 +27,7 @@ process PREPROCESS_QC {
     script:
     """
     python ${projectDir}/bin/01_preprocess_qc.py \
-      --input ${input_h5ad} \
+      --input ${metadata_csv} \
       --output preprocessed.h5ad \
       --qc-summary qc_summary.csv \
       --min-genes ${params.min_genes} \
@@ -104,8 +104,8 @@ process UMAP_VIS {
 }
 
 workflow {
-    ch_input = Channel.fromPath(params.input_h5ad, checkIfExists: true)
-    preprocessed = PREPROCESS_QC(ch_input)
+    ch_metadata = Channel.fromPath(params.metadata_csv, checkIfExists: true)
+    preprocessed = PREPROCESS_QC(ch_metadata)
     singlets = DOUBLET_SCRUBLET(preprocessed.preprocessed_h5ad)
     integrated = INTEGRATE_SCVI(singlets.singlets_h5ad)
     UMAP_VIS(integrated.integrated_h5ad)
