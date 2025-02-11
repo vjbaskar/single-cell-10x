@@ -4,7 +4,7 @@
 from pathlib import Path
 
 import scanpy as sc
-import scvi
+import scanpy_plus as sp
 import typer
 
 app = typer.Typer()
@@ -23,10 +23,17 @@ def main(
     if batch_key not in adata.obs.columns:
         adata.obs[batch_key] = "batch_1"
 
-    scvi.model.SCVI.setup_anndata(adata, batch_key=batch_key)
-    model = scvi.model.SCVI(adata, n_latent=n_latent)
-    model.train(max_epochs=max_epochs)
-    adata.obsm["X_scvi"] = model.get_latent_representation()
+    if "counts" not in adata.layers:
+        adata.layers["counts"] = adata.X.copy()
+    adata, _, model = sp.tl.run_scvi(
+        adata,
+        batch_key=batch_key,
+        raw_count_layer="counts",
+        n_latent=n_latent,
+        max_epochs=max_epochs,
+        latent_key="X_scvi",
+        clean_genes_before_integration=False,
+    )
 
     model_dir_path = Path(model_dir)
     model_dir_path.mkdir(parents=True, exist_ok=True)
