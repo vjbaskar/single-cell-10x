@@ -1,0 +1,19 @@
+input:
+  metadata_csv: "input/metadata.csv"
+
+preprocess_qc:
+  min_genes: 200
+  min_cells: 3
+  max_mito_pct: 20.0
+
+doublet_scrublet:
+  expected_doublet_rate: 0.06
+
+integrate_scvi:
+  batch_key: "batch"
+  n_latent: 30
+  max_epochs: 200
+
+umap_vis:
+  n_neighbors: 15
+  leiden_resolution: 0.5
