@@ -12,9 +12,9 @@ app = typer.Typer()
 
 @app.command()
 def main(
-    input: str = typer.Option(...),
-    output: str = typer.Option(...),
-    qc_summary: str = typer.Option(...),
+    input: str = typer.Option(..., "--input", "-i"),
+    output: str = typer.Option(..., "--output", "-o"),
+    qc_summary: str = typer.Option(..., "--qc-summary", "-q"),
     min_genes: int = typer.Option(200),
     min_cells: int = typer.Option(3),
     max_mito_pct: float = typer.Option(20.0),
