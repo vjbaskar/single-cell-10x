@@ -64,7 +64,8 @@ def main(
         keys=[str(x) for x in meta["sample_name"].tolist()],
         fill_value=0,
     )
-    summary = pd.DataFrame(rows).sort_values("sample_name")
+    summary = pd.DataFrame(rows)
+    summary = summary.sort_values("sample_name")
     Path(qc_summary).parent.mkdir(parents=True, exist_ok=True)
     summary.to_csv(qc_summary, index=False)
     Path(output).parent.mkdir(parents=True, exist_ok=True)
