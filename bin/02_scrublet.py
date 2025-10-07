@@ -12,9 +12,9 @@ app = typer.Typer()
 
 @app.command()
 def main(
-    input: str = typer.Option(...),
-    output: str = typer.Option(...),
-    output_annotated: str = typer.Option(...),
+    input: str = typer.Option(..., "--input", "-i"),
+    output: str = typer.Option(..., "--output", "-o"),
+    output_annotated: str = typer.Option(..., "--output-annotated", "-a"),
     expected_doublet_rate: float = typer.Option(0.06),
 ):
     """Score and remove predicted doublets."""
