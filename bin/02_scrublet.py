@@ -27,6 +27,7 @@ def main(
     doublet_scores, predicted_doublets = scrub.scrub_doublets()
     adata.obs["doublet_score"] = doublet_scores
     adata.obs["predicted_doublet"] = predicted_doublets.astype(bool)
+    adata.obs["predicted_doublet"] = adata.obs["predicted_doublet"].astype("category")
 
     Path(output_annotated).parent.mkdir(parents=True, exist_ok=True)
     adata.write_h5ad(output_annotated)
