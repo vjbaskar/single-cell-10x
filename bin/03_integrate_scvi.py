@@ -11,9 +11,9 @@ app = typer.Typer()
 
 @app.command()
 def main(
-    input: str = typer.Option(...),
-    output: str = typer.Option(...),
-    model_dir: str = typer.Option(...),
+    input: str = typer.Option(..., "--input", "-i"),
+    output: str = typer.Option(..., "--output", "-o"),
+    model_dir: str = typer.Option(..., "--model-dir", "-m"),
     batch_key: str = typer.Option("batch"),
     n_latent: int = typer.Option(30),
     max_epochs: int = typer.Option(200),
