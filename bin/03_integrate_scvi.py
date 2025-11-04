@@ -34,6 +34,8 @@ def main(
         latent_key="X_scvi",
         clean_genes_before_integration=False,
     )
+    if "X_scvi" not in adata.obsm:
+        adata.obsm["X_scvi"] = model.get_latent_representation()
 
     model_dir_path = Path(model_dir)
     model_dir_path.mkdir(parents=True, exist_ok=True)
