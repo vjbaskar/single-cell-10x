@@ -10,9 +10,9 @@ app = typer.Typer()
 
 @app.command()
 def main(
-    input: str = typer.Option(...),
-    output: str = typer.Option(...),
-    umap_png: str = typer.Option(...),
+    input: str = typer.Option(..., "--input", "-i"),
+    output: str = typer.Option(..., "--output", "-o"),
+    umap_png: str = typer.Option(..., "--umap-png", "-p"),
     batch_key: str = typer.Option("batch"),
     n_neighbors: int = typer.Option(15),
     leiden_resolution: float = typer.Option(0.5),
