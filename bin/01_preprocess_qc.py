@@ -31,6 +31,8 @@ def main(
         sample_name = getattr(rec, "sample_name")
         starsolo_path = getattr(rec, "starsolo")
         adata = sc.read_10x_mtx(starsolo_path, var_names="gene_symbols", make_unique=True, cache=False)
+        adata.obs['sample_name'] = sample_name
+        adata.obs['starsolo_path'] = starsolo_path
         adata.obs_names = [sample_name + "_" + bc for bc in adata.obs_names]
         for col in obs_cols:
             adata.obs[col] = getattr(rec, col)
