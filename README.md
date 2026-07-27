@@ -1,6 +1,6 @@
 # nf-scanpy
 
-simple nextflow + scanpy workflow
+simple nextflow pipeline for scanpy workflow for single cell analysis
 
 ## steps
 
@@ -16,5 +16,6 @@ nextflow run main.nf --input_h5ad data/input.h5ad --outdir results
 ```
 
 ## notes
-
+- uses scanpy - install from environment.yml
 - uses scvi-tools
+- uses scanpy_plus
