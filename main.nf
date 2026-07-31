@@ -1,25 +1,27 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl=2
 
-def inputParams = (params.input ?: [:]) as Map
-def preprocessParams = (params.preprocess_qc ?: [:]) as Map
-def scrubletParams = (params.doublet_scrublet ?: [:]) as Map
-def scviParams = (params.integrate_scvi ?: [:]) as Map
-def umapParams = (params.umap_vis ?: [:]) as Map
+def initParams() {
+    def inputParams = (params.input ?: [:]) as Map
+    def preprocessParams = (params.preprocess_qc ?: [:]) as Map
+    def scrubletParams = (params.doublet_scrublet ?: [:]) as Map
+    def scviParams = (params.integrate_scvi ?: [:]) as Map
+    def umapParams = (params.umap_vis ?: [:]) as Map
 
-params.metadata_csv = params.metadata_csv ?: inputParams.metadata_csv ?: "input/metadata.csv"
-params.outdir = params.outdir ?: "results"
-params.min_genes = params.min_genes ?: preprocessParams.min_genes ?: 200
-params.min_cells = params.min_cells ?: preprocessParams.min_cells ?: 3
-params.max_mito_pct = params.max_mito_pct ?: preprocessParams.max_mito_pct ?: 20.0
-params.expected_doublet_rate = (
-    params.expected_doublet_rate ?: scrubletParams.expected_doublet_rate ?: 0.06
-)
-params.batch_key = params.batch_key ?: scviParams.batch_key ?: "batch"
-params.n_latent = params.n_latent ?: scviParams.n_latent ?: 30
-params.max_epochs = params.max_epochs ?: scviParams.max_epochs ?: 200
-params.n_neighbors = params.n_neighbors ?: umapParams.n_neighbors ?: 15
-params.leiden_resolution = params.leiden_resolution ?: umapParams.leiden_resolution ?: 0.5
+    params.metadata_csv = params.metadata_csv ?: inputParams.metadata_csv ?: "input/metadata.csv"
+    params.outdir = params.outdir ?: "results"
+    params.min_genes = params.min_genes ?: preprocessParams.min_genes ?: 200
+    params.min_cells = params.min_cells ?: preprocessParams.min_cells ?: 3
+    params.max_mito_pct = params.max_mito_pct ?: preprocessParams.max_mito_pct ?: 20.0
+    params.expected_doublet_rate = (
+        params.expected_doublet_rate ?: scrubletParams.expected_doublet_rate ?: 0.06
+    )
+    params.batch_key = params.batch_key ?: scviParams.batch_key ?: "batch"
+    params.n_latent = params.n_latent ?: scviParams.n_latent ?: 30
+    params.max_epochs = params.max_epochs ?: scviParams.max_epochs ?: 200
+    params.n_neighbors = params.n_neighbors ?: umapParams.n_neighbors ?: 15
+    params.leiden_resolution = params.leiden_resolution ?: umapParams.leiden_resolution ?: 0.5
+}
 
 process PREPROCESS_QC {
     tag "preprocess_qc"
@@ -111,7 +113,25 @@ process UMAP_VIS {
     """
 }
 
+def showHelp() {
+    log.info "Usage: nextflow run main.nf --metadata_csv <metadata.csv> --outdir <output_dir>"
+    log.info "Options:"
+    log.info "  --metadata_csv <metadata.csv>    Path to the metadata CSV file"
+    log.info "  --outdir <output_dir>            Path to the output directory"
+    log.info "  --min_genes <min_genes>          Minimum number of genes per cell"
+    log.info "  --min_cells <min_cells>          Minimum number of cells per gene"
+    log.info "  --max_mito_pct <max_mito_pct>    Maximum percentage of mitochondrial genes"
+    log.info "  --expected_doublet_rate <expected_doublet_rate>    Expected doublet rate"
+}
+
 workflow {
+
+    if (params.help){
+        log.info "Showing help..."
+        showHelp()
+        exit 0
+    }
+    initParams()
     ch_metadata = Channel.fromPath(params.metadata_csv, checkIfExists: true)
     preprocessed = PREPROCESS_QC(ch_metadata)
     singlets = DOUBLET_SCRUBLET(preprocessed.preprocessed_h5ad)
