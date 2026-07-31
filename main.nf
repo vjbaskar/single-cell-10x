@@ -131,7 +131,7 @@ workflow {
         exit 0
     }
     initParams()
-    ch_metadata = channel.fromPath(params.metadata_csv, checkIfExists: true)
+    ch_metadata = Channel.fromPath(params.metadata_csv, checkIfExists: true)
     preprocessed = PREPROCESS_QC(ch_metadata)
     singlets = DOUBLET_SCRUBLET(preprocessed.preprocessed_h5ad)
     integrated = INTEGRATE_SCVI(singlets.singlets_h5ad)
