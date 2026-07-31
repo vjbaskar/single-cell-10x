@@ -125,7 +125,7 @@ def showHelp() {
 
 workflow {
 
-    if (params.help){
+    if (params.show_help){
         log.info "Showing help..."
         showHelp()
         exit 0
