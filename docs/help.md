@@ -17,4 +17,4 @@
 - `--max_epochs <max_epochs>`: Maximum number of epochs
 - `--n_neighbors <n_neighbors>`: Number of neighbors
 - `--leiden_resolution <leiden_resolution>`: Leiden resolution
-- `--help`: Show this help message
+- `--show_help`: Show this help message
