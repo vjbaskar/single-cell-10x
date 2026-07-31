@@ -114,14 +114,13 @@ process UMAP_VIS {
 }
 
 def showHelp() {
-    log.info "Usage: nextflow run main.nf --metadata_csv <metadata.csv> --outdir <output_dir>"
-    log.info "Options:"
-    log.info "  --metadata_csv <metadata.csv>    Path to the metadata CSV file"
-    log.info "  --outdir <output_dir>            Path to the output directory"
-    log.info "  --min_genes <min_genes>          Minimum number of genes per cell"
-    log.info "  --min_cells <min_cells>          Minimum number of cells per gene"
-    log.info "  --max_mito_pct <max_mito_pct>    Maximum percentage of mitochondrial genes"
-    log.info "  --expected_doublet_rate <expected_doublet_rate>    Expected doublet rate"
+    def helpPath = "${projectDir}/docs/help.md"
+    def helpFile = file(helpPath)
+    if( !helpFile.exists() ) {
+        log.error "Help file not found: ${helpPath}"
+        return
+    }
+    log.info helpFile.text
 }
 
 workflow {
@@ -132,7 +131,7 @@ workflow {
         exit 0
     }
     initParams()
-    ch_metadata = Channel.fromPath(params.metadata_csv, checkIfExists: true)
+    ch_metadata = channel.fromPath(params.metadata_csv, checkIfExists: true)
     preprocessed = PREPROCESS_QC(ch_metadata)
     singlets = DOUBLET_SCRUBLET(preprocessed.preprocessed_h5ad)
     integrated = INTEGRATE_SCVI(singlets.singlets_h5ad)
