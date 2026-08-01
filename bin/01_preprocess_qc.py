@@ -18,6 +18,7 @@ def main(
     min_genes: int = typer.Option(200),
     min_cells: int = typer.Option(3),
     max_mito_pct: float = typer.Option(20.0),
+    n_top_genes: int = typer.Option(1000),
 ):
     """Run preprocessing on one AnnData."""
     meta = pd.read_csv(input)
@@ -72,6 +73,7 @@ def main(
     summary.to_csv(qc_summary, index=False)
     Path(output).parent.mkdir(parents=True, exist_ok=True)
     adata.write_h5ad(output)
+    sc.pp.highly_variable_genes(adata, n_top_genes=1000)
 
 
 if __name__ == "__main__":
