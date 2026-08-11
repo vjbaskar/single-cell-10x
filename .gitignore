@@ -1,6 +1,7 @@
 work/
 .nextflow*
 results/
+data/
 *.h5ad
 *.h5
 *.loom
