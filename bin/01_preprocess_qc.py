@@ -42,7 +42,6 @@ def main(
         n_obs_before = adata.n_obs
         n_vars_before = adata.n_vars
         sc.pp.filter_cells(adata, min_genes=min_genes)
-        sc.pp.filter_genes(adata, min_cells=min_cells)
         adata = adata[adata.obs["pct_counts_mt"] <= max_mito_pct].copy()
         rows.append({
             "sample_name": sample_name,
@@ -67,6 +66,8 @@ def main(
         keys=[str(x) for x in meta["sample_name"].tolist()],
         fill_value=0,
     )
+    adata.var["mt"] = adata.var_names.str.upper().str.startswith("MT-")
+    sc.pp.filter_genes(adata, min_cells=min_cells)
     summary = pd.DataFrame(rows)
     summary = summary.sort_values("sample_name")
     Path(qc_summary).parent.mkdir(parents=True, exist_ok=True)
